@@ -1,16 +1,17 @@
 import { Universe, Cell }  from "wasm-game-of-life";
 import { memory } from "wasm-game-of-life/wasm_game_of_life_bg";
 
-const CELL_SIZE = 4;
+const CELL_SIZE = 3;
 const GRID_COLOR = "#CCCCCC";
 const DEAD_COLOR = "#FFFFFF";
 const ALIVE_COLOR = "#000000";
 
 const universe_red = Universe.new(1);
-const universe_green = Universe.new(2);
-const universe_blue = Universe.new(3)
+//const universe_green = Universe.new(2);
+//const universe_blue = Universe.new(3)
 const width = universe_red.width();
 const height = universe_red.height();
+
 
 const canvas = document.getElementById("game-of-life-canvas");
 canvas.height = (CELL_SIZE + 1) * height + 1;
@@ -51,12 +52,15 @@ const getIndex = (row, column) => {
 
 const drawCells = () => {
     const cellsPtr_red = universe_red.cells();
+    const cellsPtr_green = universe_red.cells_green();
+    const cellsPtr_blue = universe_red.cells_blue();
     const cells_red = new Uint8Array(memory.buffer, cellsPtr_red, width * height);
-    const cellsPtr_green = universe_green.cells();
     const cells_green = new Uint8Array(memory.buffer, cellsPtr_green, width * height);
-    const cellsPtr_blue = universe_blue.cells();
     const cells_blue = new Uint8Array(memory.buffer, cellsPtr_blue, width * height);
-
+    //const cellsPtr_green = universe_green.cells();
+    //const cells_green = new BigUint64Array(memory.buffer, cellsPtr_green, width * height);
+    //const cellsPtr_blue = universe_blue.cells();
+    //const cells_blue = new BigUint64Array(memory.buffer, cellsPtr_blue, width * height);
     ctx.beginPath();
 
     for (let row = 0; row < height; row++) {
@@ -69,10 +73,10 @@ const drawCells = () => {
             let int_blue = Math.floor((cells_green[idx] + cells_red[idx])/3);
             */
             let colorPart_red = cells_red[idx].toString(16).padStart(2, "0");
-            //let colorPart_green = cells_green[idx].toString(16).padStart(2, "0");
-            //let colorPart_blue = cells_blue[idx].toString(16).padStart(2, "0");
+            let colorPart_green = cells_green[idx].toString(16).padStart(2, "0");
+            let colorPart_blue = cells_blue[idx].toString(16).padStart(2, "0");
 
-            ctx.fillStyle = "#" + colorPart_red + colorPart_red + colorPart_red;
+            ctx.fillStyle = "#" + colorPart_red + colorPart_green + colorPart_blue;
 
             //ctx.fillStyle = cells[idx] == Cell.Dead ? DEAD_COLOR : ALIVE_COLOR;
 
